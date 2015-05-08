@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lapointe.PowerShell.MamlGenerator", "Lapointe.PowerShell.MamlGenerator.csproj", "{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DebugFoundation|Any CPU = DebugFoundation|Any CPU
+		DebugMOSS|Any CPU = DebugMOSS|Any CPU
+		ReleaseFoundation|Any CPU = ReleaseFoundation|Any CPU
+		ReleaseMOSS|Any CPU = ReleaseMOSS|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.DebugFoundation|Any CPU.ActiveCfg = DebugFoundation|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.DebugFoundation|Any CPU.Build.0 = DebugFoundation|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.DebugMOSS|Any CPU.ActiveCfg = DebugMOSS|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.DebugMOSS|Any CPU.Build.0 = DebugMOSS|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.ReleaseFoundation|Any CPU.ActiveCfg = ReleaseFoundation|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.ReleaseFoundation|Any CPU.Build.0 = ReleaseFoundation|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.ReleaseMOSS|Any CPU.ActiveCfg = ReleaseMOSS|Any CPU
+		{E4CA890C-49C0-4B13-991A-A1541ADFBFA8}.ReleaseMOSS|Any CPU.Build.0 = ReleaseMOSS|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
