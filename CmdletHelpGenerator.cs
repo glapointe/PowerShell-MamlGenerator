@@ -21,15 +21,27 @@ namespace Lapointe.PowerShell.MamlGenerator
         public static void GenerateHelp(string outputPath, bool oneFile)
         {
             //System.Diagnostics.Debugger.Launch();
-            GenerateHelp(Assembly.GetExecutingAssembly(), outputPath, oneFile);
+            GenerateHelp(Assembly.GetExecutingAssembly(), outputPath, oneFile, null);
+        }
+        public static void GenerateHelp(string outputPath, bool oneFile, string cmdletName)
+        {
+            GenerateHelp(Assembly.GetExecutingAssembly(), outputPath, oneFile, cmdletName);
         }
 
         public static void GenerateHelp(string inputFile, string outputPath, bool oneFile)
         {
-            GenerateHelp(Assembly.LoadFrom(inputFile), outputPath, oneFile);
+            GenerateHelp(Assembly.LoadFrom(inputFile), outputPath, oneFile, null);
+        }
+        public static void GenerateHelp(string inputFile, string outputPath, bool oneFile, string cmdletName)
+        {
+            GenerateHelp(Assembly.LoadFrom(inputFile), outputPath, oneFile, cmdletName);
         }
 
         public static void GenerateHelp(Assembly asm, string outputPath, bool oneFile)
+        {
+            GenerateHelp(asm, outputPath, oneFile, null);
+        }
+        public static void GenerateHelp(Assembly asm, string outputPath, bool oneFile, string cmdletName)
         {
             Console.WriteLine(string.Format("MamlGenerator.GenerateHelp(): asm={0}; outputPath={1}; oneFile={2}", asm.FullName, outputPath, oneFile));
 
@@ -57,6 +69,8 @@ namespace Lapointe.PowerShell.MamlGenerator
                 CmdletAttribute ca = GetAttribute<CmdletAttribute>(type);
                 if (ca != null)
                 {
+                    if (!string.IsNullOrEmpty(cmdletName) && cmdletName.ToLower() != string.Format("{0}-{1}", ca.VerbName, ca.NounName).ToLower()) continue;
+
                     Console.WriteLine(string.Format("MamlGenerator.GenerateHelp(): Found Cmdlet: {0}-{1}", ca.VerbName, ca.NounName));
 
                     if (!oneFile)
@@ -119,7 +133,7 @@ namespace Lapointe.PowerShell.MamlGenerator
                                     defaultSet = string.Empty;
 
                                 string set = temp.ParameterSetName;
-                                if (string.IsNullOrEmpty(set) || set == DEFAULT_PARAMETER_SET_NAME)
+                                if (string.IsNullOrEmpty(set) || set == ALL_PARAMETER_SETS_NAME)
                                 {
                                     set = string.Empty;
                                     defaultPA = temp;
@@ -228,13 +242,13 @@ namespace Lapointe.PowerShell.MamlGenerator
             }
         }
 
-        const string DEFAULT_PARAMETER_SET_NAME = "__AllParameterSets";
+        const string ALL_PARAMETER_SETS_NAME = "__AllParameterSets";
 
         private static void WriteSyntax(CmdletAttribute ca, Type type)
         {
             Dictionary<string, List<PropertyInfo>> parameterSets = new Dictionary<string, List<PropertyInfo>>();
 
-            List<PropertyInfo> defaultSet = null;
+            List<PropertyInfo> allParameterSets = null;
             foreach (PropertyInfo pi in type.GetProperties())
             {
                 List<ParameterAttribute> pas = GetAttribute<ParameterAttribute>(pi);
@@ -258,27 +272,24 @@ namespace Lapointe.PowerShell.MamlGenerator
             if (parameterSets.Count == 0)
                 return;
 
-            if (parameterSets.ContainsKey(DEFAULT_PARAMETER_SET_NAME))
-                defaultSet = parameterSets[DEFAULT_PARAMETER_SET_NAME];
+            if (parameterSets.ContainsKey(ALL_PARAMETER_SETS_NAME))
+                allParameterSets = parameterSets[ALL_PARAMETER_SETS_NAME];
 
-            if (!string.IsNullOrEmpty(ca.DefaultParameterSetName) && parameterSets.ContainsKey(ca.DefaultParameterSetName))
-                defaultSet = parameterSets[ca.DefaultParameterSetName];
-
-            if (parameterSets.Count > 1 && parameterSets.ContainsKey(DEFAULT_PARAMETER_SET_NAME))
-                parameterSets.Remove(DEFAULT_PARAMETER_SET_NAME);
+            if (parameterSets.Count > 1 && parameterSets.ContainsKey(ALL_PARAMETER_SETS_NAME))
+                parameterSets.Remove(ALL_PARAMETER_SETS_NAME);
             if (parameterSets.Count == 1)
-                defaultSet = null;
+                allParameterSets = null;
 
             _writer.WriteStartElement("command", "syntax", null);
             foreach (string parameterSetName in parameterSets.Keys)
             {
-                WriteSyntaxItem(ca, parameterSets, parameterSetName, defaultSet);
+                WriteSyntaxItem(ca, parameterSets, parameterSetName, allParameterSets);
             }
             _writer.WriteEndElement(); //command:syntax
         }
 
        
-        private static void WriteSyntaxItem(CmdletAttribute ca, Dictionary<string, List<PropertyInfo>> parameterSets, string parameterSetName, List<PropertyInfo> defaultSet)
+        private static void WriteSyntaxItem(CmdletAttribute ca, Dictionary<string, List<PropertyInfo>> parameterSets, string parameterSetName, List<PropertyInfo> allParameterSets)
         {
             _writer.WriteStartElement("command", "syntaxItem", null);
             _writer.WriteElementString("maml", "name", null, string.Format("{0}-{1}", ca.VerbName, ca.NounName));
@@ -290,9 +301,9 @@ namespace Lapointe.PowerShell.MamlGenerator
 
                 WriteParameter(pi, pa);
             }
-            if (defaultSet != null)
+            if (allParameterSets != null)
             {
-                foreach (PropertyInfo pi in defaultSet)
+                foreach (PropertyInfo pi in allParameterSets)
                 {
                     List<ParameterAttribute> pas = GetAttribute<ParameterAttribute>(pi);
                     if (pas == null)
