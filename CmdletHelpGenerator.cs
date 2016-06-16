@@ -16,8 +16,9 @@ namespace Lapointe.PowerShell.MamlGenerator
         private static XmlTextWriter _writer = null;
 
         /*
-        C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "& {W:\Work\Lapointe.SharePoint.PowerShell\Lapointe.SharePoint.PowerShell\GenerateHelp.ps1 W:\Work\Lapointe.SharePoint.PowerShell\Lapointe.SharePoint.PowerShell\bin\Debug\}"
-         */
+        [System.Reflection.Assembly]::LoadFile("W:\Github\PowerShell-MamlGenerator\bin\Debug\Lapointe.PowerShell.MamlGenerator.dll")
+        [Lapointe.PowerShell.MamlGenerator.CmdletHelpGenerator]::GenerateHelp("W:\Github\PowerShell-SPCmdlets\Lapointe.SharePoint2013.PowerShell\bin\Debug\Lapointe.SharePoint.PowerShell.dll", "c:\temp\", $true, "Download-SPFile")
+        */
         public static void GenerateHelp(string outputPath, bool oneFile)
         {
             //System.Diagnostics.Debugger.Launch();
